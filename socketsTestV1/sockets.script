@@ -1,0 +1,80 @@
+def sockets():
+  global _hidden_verificationVariable=0
+  set_gravity([0.0, 0.0, 9.82])
+  set_standard_analog_input_domain(0, 1)
+  set_standard_analog_input_domain(1, 1)
+  set_tool_analog_input_domain(0, 1)
+  set_tool_analog_input_domain(1, 1)
+  set_analog_outputdomain(0, 0)
+  set_analog_outputdomain(1, 0)
+  set_input_actions_to_default()
+  set_tcp(p[0.0,0.0,0.0,0.0,0.0,0.0])
+  set_tool_communication(False, 115200, 0, 1, 1.5, 3.5)
+  set_tool_output_mode(0)
+  set_tool_digital_output_mode(0, 1)
+  set_tool_digital_output_mode(1, 1)
+  set_tool_voltage(0)
+  set_target_payload(0.000000, [0.000000, 0.000000, 0.000000], [0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000])
+  set_safety_mode_transition_hardness(1)
+  step_count_1d3ff0cd_ee27_4ec2_ac5d_65deebe8fb62 = 0.0
+  thread Step_Counter_Thread_8b0dd32d_4922_4235_9321_cc63bfe9ce38():
+    while (True):
+      step_count_1d3ff0cd_ee27_4ec2_ac5d_65deebe8fb62 = step_count_1d3ff0cd_ee27_4ec2_ac5d_65deebe8fb62 + 1.0
+      sync()
+    end
+  end
+  run Step_Counter_Thread_8b0dd32d_4922_4235_9321_cc63bfe9ce38()
+  $ 2 "BeforeStart"
+  $ 3 "Script: functions.script"
+  socket="s1"
+  len=2
+  
+  def operacio(mode, currentWidht):
+  	socket_send_byte(mode ,socket)
+  	socket_send_byte(currentWidht, socket)
+  	return socket_read_byte_list(len, socket, 2)
+  end
+  
+  def open(data, targetWidht):
+  	currentWidht=data[1]
+  	while(currentWidht<targetWidht):
+  		data=operacio(1, currentWidht)
+  		currentWidht=data[1]
+  	end
+  	data=operacio(0, currentWidht)
+  	return data
+  end
+  
+  def close(data, targetWidht):
+  	currentWidht=data[1]
+  	while(currentWidht>targetWidht):
+  		data=operacio(2, currentWidht)
+  		currentWidht=data[1]
+  	end
+  	data=operacio(0, currentWidht)
+  	return data
+  end
+  $ 4 "initial_pose≔get_actual_tcp_pose()"
+  global initial_pose=get_actual_tcp_pose()
+  $ 5 "ip≔'172.23.5.109'"
+  global ip="172.23.5.109"
+  $ 6 "socket≔socket_open(ip, 5858, 's1')"
+  global socket=socket_open(ip, 5858, "s1")
+  $ 7 "Loop socket≟ False "
+  while (socket ==   False  ):
+    $ 8 "socket≔socket_open(ip, 5858,'s1')"
+    global socket=socket_open(ip, 5858,"s1")
+  end
+  while (True):
+    $ 9 "Robot Program"
+    $ 10 "data≔socket_read_byte_list(2, 's1', 4)"
+    global data=socket_read_byte_list(2, "s1", 4)
+    $ 11 "Loop True"
+    while (True):
+      $ 12 "data≔close(25, data)"
+      global data=close(25, data)
+      $ 13 "data≔open(42, data)"
+      global data=open(42, data)
+    end
+  end
+end

@@ -1,0 +1,28 @@
+socket="s1"
+len=2
+
+def operacio(mode, currentWidht):
+	socket_send_byte(mode ,socket)
+	socket_send_byte(currentWidht, socket)
+	return socket_read_byte_list(len, socket, 2)
+end
+
+def open(data, targetWidht):
+	currentWidht=data[1]
+	while(currentWidht<targetWidht):
+		data=operacio(1, currentWidht)
+		currentWidht=data[1]
+	end
+	data=operacio(0, currentWidht)
+	return data
+end
+
+def close(data, targetWidht):
+	currentWidht=data[1]
+	while(currentWidht>targetWidht):
+		data=operacio(2, currentWidht)
+		currentWidht=data[1]
+	end
+	data=operacio(0, currentWidht)
+	return data
+end

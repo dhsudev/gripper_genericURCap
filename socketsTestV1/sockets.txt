@@ -1,0 +1,14 @@
+ Program
+   Variables Setup
+   BeforeStart
+     Script: functions.script
+     initial_pose≔get_actual_tcp_pose()
+     ip≔"172.23.5.109"
+     socket≔socket_open(ip, 5858, "s1")
+     Loop socket≟ False 
+       socket≔socket_open(ip, 5858,"s1")
+   Robot Program
+     data≔socket_read_byte_list(2, "s1", 4)
+     Loop True
+       data≔close(25, data)
+       data≔open(42, data)
