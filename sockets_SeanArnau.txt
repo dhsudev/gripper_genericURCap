@@ -1,0 +1,20 @@
+ Program
+   Variables Setup
+   BeforeStart
+     initial_pose≔get_actual_tcp_pose()
+     ip≔"172.23.5.109"
+     socket≔socket_open(ip, 5858, "s1")
+   Robot Program
+     Loop socket≟ False 
+       socket≔socket_open(ip, 5858,"s1")
+     socket_send_line(get_actual_tcp_pose(), "s1")
+     MoveJ
+       initial_pose
+     read_line≔socket_read_ascii_float(6,"s1")
+     Loop read_line[0]≟0
+       read_line≔socket_read_ascii_float(6,"s1")
+       Wait: 0.5
+     Popup
+     posicion≔p[read_line[1],read_line[2],read_line[3],read_line[4],read_line[5],read_line[6]]
+     MoveJ
+       posicion
