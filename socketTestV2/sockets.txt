@@ -1,0 +1,18 @@
+ Program
+   Variables Setup
+   BeforeStart
+     socketTxt≔"s1"
+     len≔2
+     Script: functions.script
+     initial_pose≔get_actual_tcp_pose()
+     ip≔"172.30.3.149"
+     socket≔ False 
+   Robot Program
+     Loop socket≟False
+       socket≔socket_open(ip, 8080,"s1")
+     data≔socket_read_byte_list(2, "s1", 4)
+     Popup
+     Loop True
+       'operacio(2, 45)'
+       data≔close(data,25)
+       data≔open(data, 42)
