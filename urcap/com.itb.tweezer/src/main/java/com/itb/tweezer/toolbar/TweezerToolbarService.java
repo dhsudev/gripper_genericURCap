@@ -8,20 +8,16 @@ import com.ur.urcap.api.contribution.toolbar.swing.SwingToolbarContribution;
 import com.ur.urcap.api.contribution.toolbar.swing.SwingToolbarService;
 import com.ur.urcap.api.domain.data.DataModel;
 
-import Installation.TweezerDaemonService;
-
 public class TweezerToolbarService implements SwingToolbarService {
-
-	private TweezerDaemonService tds;
 	
-	public TweezerToolbarService(TweezerDaemonService tds) {
-		this.tds = tds;
+	public TweezerToolbarService() {
+		
 	}
 	
 	//toDo: problems al pasar el data model
 	@Override
 	public SwingToolbarContribution createToolbar(ToolbarContext context) { 
-		return new TweezerToolbarContribution(this.tds, context);
+		return new TweezerToolbarContribution(context);
 	}
 	
 	@Override

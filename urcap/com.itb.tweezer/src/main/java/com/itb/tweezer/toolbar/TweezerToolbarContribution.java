@@ -8,13 +8,11 @@ import javax.swing.JPanel;
 import com.ur.urcap.api.contribution.toolbar.ToolbarContext;
 import com.ur.urcap.api.contribution.toolbar.swing.SwingToolbarContribution;
 
-import Installation.TweezerDaemonService;
-
 public class TweezerToolbarContribution implements SwingToolbarContribution {
 
 	private final ToolbarContext context;
 	
-	TweezerToolbarContribution(TweezerDaemonService tds, ToolbarContext context) {
+	TweezerToolbarContribution(ToolbarContext context) {
 		this.context = context;
 	}
 	

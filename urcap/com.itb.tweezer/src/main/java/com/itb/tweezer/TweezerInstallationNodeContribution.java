@@ -1,4 +1,4 @@
-package Installation;
+package com.itb.tweezer;
 
 import com.ur.urcap.api.contribution.InstallationNodeContribution;
 import com.ur.urcap.api.domain.data.DataModel;
@@ -7,7 +7,7 @@ import com.ur.urcap.api.domain.script.ScriptWriter;
 public class TweezerInstallationNodeContribution implements InstallationNodeContribution {
 
 	//toDo: implement each functio for addresing the tweezer IP addres.
-	public TweezerInstallationNodeContribution(TweezerDaemonService tweezerDaemonService, DataModel model) {
+	public TweezerInstallationNodeContribution(DataModel model) {
 		// TODO Auto-generated constructor stub
 	}
 

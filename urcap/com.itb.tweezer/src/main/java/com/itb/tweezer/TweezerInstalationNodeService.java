@@ -1,4 +1,4 @@
-package Installation;
+package com.itb.tweezer;
 
 import java.io.InputStream;
 
@@ -8,17 +8,14 @@ import com.ur.urcap.api.domain.URCapAPI;
 import com.ur.urcap.api.domain.data.DataModel;
 
 public class TweezerInstalationNodeService implements InstallationNodeService{
-
-	private TweezerDaemonService tweezerDaemonService;
 	
-	public TweezerInstalationNodeService(TweezerDaemonService tds) {
-		this.tweezerDaemonService = tds;
-		
+	public TweezerInstalationNodeService() {
+	
 	}
 	
 	@Override
 	public InstallationNodeContribution createInstallationNode(URCapAPI api, DataModel model) {
-		return new TweezerInstallationNodeContribution(this.tweezerDaemonService, model);
+		return new TweezerInstallationNodeContribution(model);
 	}
 	
 	@Override
