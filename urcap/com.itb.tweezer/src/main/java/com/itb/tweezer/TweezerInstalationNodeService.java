@@ -1,4 +1,4 @@
-package Installation;
+package com.itb.tweezer;
 
 import java.io.InputStream;
 

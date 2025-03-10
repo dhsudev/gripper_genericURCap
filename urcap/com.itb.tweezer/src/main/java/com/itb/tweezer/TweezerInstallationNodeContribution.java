@@ -1,4 +1,4 @@
-package Installation;
+package com.itb.tweezer;
 
 import com.ur.urcap.api.contribution.InstallationNodeContribution;
 import com.ur.urcap.api.domain.data.DataModel;

@@ -1,4 +1,4 @@
-package com.itb.tweezer.impl;
+package com.itb.tweezer;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
