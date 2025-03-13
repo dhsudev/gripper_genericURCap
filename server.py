@@ -2,7 +2,7 @@ import socket
 import time
 
 HOST = "0.0.0.0" # The remote host
-PORT = 20 # The same port as used by the server
+PORT = 12345 # The same port as used by the server
 print ("Starting Program")
 count = 0
 
@@ -24,12 +24,10 @@ try:
      time.sleep(1)  # Wait 1 second
 
      # Receive
-     actual_state = list(c.recv(3))
+     actual_state = list(c.recv(32))
      print("Received Raw =", actual_state)
 
-     print("Hola bon dia")
      while keepGoing:
-
          # Ensure we have at least two elements before modifying
          if len(actual_state) > 1:
              match actual_state[0]:  # Switch on first byte
@@ -51,7 +49,7 @@ try:
          print("Sent Updated =", list(output))
 
          # Receive
-         actual_state = list(c.recv(3))
+         actual_state = list(c.recv(32))
          print("Received Raw =", actual_state)
          time.sleep(1)
 except socket.error as socketerror:
