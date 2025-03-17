@@ -12,12 +12,12 @@ public class Communicator implements Runnable {
     private Socket socket;
     private ReentrantLock byteLock = new ReentrantLock();
 
-    public Communicator(String host, int port, int width) {
+    public Communicator(String host, int port) {
         this.host = host;
         this.port = port;
         this.isConnected = true;
-        this.width = width;
-        this.mode = 0; // Default mode
+        this.width = 32;
+        this.mode = 0;
         this.data = new byte[32];
         updateData();
     }
@@ -61,10 +61,10 @@ public class Communicator implements Runnable {
         while (isConnected) {
             read();
             updateState();
-            sleep(500);
+            sleep(200);
             updateData();
             send();
-            sleep(500);
+            sleep(200);
         }
         close();
     }
@@ -99,7 +99,7 @@ public class Communicator implements Runnable {
                 int bytesRead = socket.getInputStream().read(buffer);
                 if (bytesRead > 0) {
                     System.out.println("Data received.");
-                    // save in arr using lock
+                    setWidth(buffer[1]);
                 }
             }
         } catch (IOException e) {
@@ -130,9 +130,9 @@ public class Communicator implements Runnable {
     public void start() {
         new Thread(this).start();
     }
-
+/* //Exemple secuencial
     public static void main(String[] args) {
-        Communicator comm = new Communicator("localhost", 12345, 50);
+        Communicator comm = new Communicator("localhost", 12345);
         comm.start();
 
         try {
@@ -140,13 +140,13 @@ public class Communicator implements Runnable {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
-
+        comm.setWidth(30);
         System.out.println("Changing mode to 1 (open)");
         comm.setMode((byte) 1);
         //comm.setWidth(100);
 
         try {
-            Thread.sleep(3000);  // Wait a few seconds to send data
+            Thread.sleep(200);  // Wait a few seconds to send data
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
@@ -154,12 +154,16 @@ public class Communicator implements Runnable {
         System.out.println("Changing mode to 2 (close)");
         comm.setMode((byte) 2);
 
-        try {
-            Thread.sleep(2000);  // Allow the last packet to be sent before terminating
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+        while(comm.getWidth() > 35){
+            comm.setMode((byte) 2);
         }
 
+        try {
+            Thread.sleep(200);  // Allow the last packet to be sent before terminating
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } 
+
         comm.isConnected = false; // Close the connection
-    }
+    } */
 }
