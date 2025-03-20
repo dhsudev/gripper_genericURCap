@@ -20,11 +20,17 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import com.itb.tweezer.utils.Communicator;
 import com.ur.urcap.api.contribution.toolbar.ToolbarContext;
 import com.ur.urcap.api.contribution.toolbar.swing.SwingToolbarContribution;
 
 public class TweezerToolbarContribution implements SwingToolbarContribution {
 
+	// Communication
+	private Communicator comm;
+	
+	// URCap
 	private final ToolbarContext context;
 	
 	// GUI
@@ -32,10 +38,15 @@ public class TweezerToolbarContribution implements SwingToolbarContribution {
 	
 	TweezerToolbarContribution(ToolbarContext context) {
 		this.context = context;
+		this.comm = new Communicator("192.168.1.172", 12345);
 	}
 	
 	@Override
 	public void buildUI(JPanel jPanel) {
+		// Open socket
+		comm.start();
+		
+		// Create UI
 		jPanel.setLayout(new BoxLayout(jPanel, BoxLayout.Y_AXIS));
 
         // Add header
@@ -43,14 +54,19 @@ public class TweezerToolbarContribution implements SwingToolbarContribution {
         jPanel.add(createVerticalSpace(10));
 
         // Add label to display input
-        displayLabel = new JLabel("Input will be shown here");
-        displayLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        jPanel.add(displayLabel);
+        jPanel.add(createWidthLabel());
         jPanel.add(createVerticalSpace(10));
 
         
         jPanel.add(createButtons());
 
+	}
+
+	private Component createWidthLabel() {
+		// Get the with and display
+        displayLabel = new JLabel(comm.getWidth() + " mm");
+        displayLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		return displayLabel;
 	}
 
 	private Component createHeader(String title) {
