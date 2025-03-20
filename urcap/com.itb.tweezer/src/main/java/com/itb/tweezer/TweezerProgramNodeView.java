@@ -19,7 +19,7 @@ import com.ur.urcap.api.contribution.program.swing.SwingProgramNodeView;
 import com.ur.urcap.api.contribution.program.swing.SwingProgramNodeService;
 
 
-public class TweezerProgramNodeView implements SwingProgramNodeView<TweezerProgramodeContribution> {
+public class TweezerProgramNodeView implements SwingProgramNodeView<TweezerProgramNodeContribution> {
 
     private static final String WIDTH_TXT = "Width";
     private static final String WIDTH_UNIT_TXT = "mm";
