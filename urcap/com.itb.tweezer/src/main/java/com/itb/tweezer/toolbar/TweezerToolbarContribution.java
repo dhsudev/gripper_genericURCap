@@ -68,6 +68,16 @@ public class TweezerToolbarContribution implements SwingToolbarContribution {
         displayLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		return displayLabel;
 	}
+	
+	// Function that send data
+	private void onClickButton(Boolean isOpen) {
+		if (isOpen) {
+			comm.setMode((byte) 1);
+		} else {
+			comm.setMode((byte) 2); 
+		}
+		displayLabel.setText(comm.getWidth() + " mm");
+	}
 
 	private Component createHeader(String title) {
 		Box box = Box.createHorizontalBox();
@@ -82,21 +92,21 @@ public class TweezerToolbarContribution implements SwingToolbarContribution {
 	private Component createButtons() {
     	JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-        buttonPanel.add(createButton("Output 1"));
+        buttonPanel.add(createButton("Open", true));
         buttonPanel.add(createVerticalSpace(10)); // Add space between buttons
-        buttonPanel.add(createButton("Output 2"));
+        buttonPanel.add(createButton("Close", false));
         buttonPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         return buttonPanel;
 	}
 
-	private Component createButton(String label) {
+	private Component createButton(String label, Boolean open) {
         JButton button = new JButton(label);
 
+        // On click the button change mode
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	
-               
+            	onClickButton(open);
             }
         });
 
@@ -118,6 +128,7 @@ public class TweezerToolbarContribution implements SwingToolbarContribution {
 		return Box.createRigidArea(new Dimension(0, height));
 	}
 	
+	
 	@Override
 	public void openView() {
 		
@@ -126,7 +137,7 @@ public class TweezerToolbarContribution implements SwingToolbarContribution {
 
 	@Override
 	public void closeView() {
-		// TODO Auto-generated method stub
+		// TODO create a function to close the socket
 
 	}
 	
