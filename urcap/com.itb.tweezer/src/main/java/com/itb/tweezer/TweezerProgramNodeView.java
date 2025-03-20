@@ -13,6 +13,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.text.Style;
+import com.ur.urcap.api.domain.userinteraction.keyboard.KeyboardTextInput;
+import com.ur.urcap.api.contribution.ContributionProvider;
+import com.ur.urcap.api.contribution.program.swing.SwingProgramNodeView;
+import com.ur.urcap.api.contribution.program.swing.SwingProgramNodeService;
+
 
 public class TweezerProgramNodeView implements SwingProgramNodeView<TweezerProgramodeContribution> {
 

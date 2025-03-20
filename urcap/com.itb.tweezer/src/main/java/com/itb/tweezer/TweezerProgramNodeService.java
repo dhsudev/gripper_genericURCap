@@ -4,8 +4,13 @@ import java.io.InputStream;
 import java.util.Locale;
 
 import javax.swing.text.Style;
-
+import com.ur.urcap.api.contribution.program.CreationContext;
+import com.ur.urcap.api.contribution.program.ProgramAPIProvider;
+import com.ur.urcap.api.contribution.program.ContributionConfiguration;
+import com.ur.urcap.api.contribution.program.swing.SwingProgramNodeService;
+import com.ur.urcap.api.contribution.ViewAPIProvider;
 import com.ur.urcap.api.domain.URCapAPI;
+import com.ur.urcap.api.domain.SystemAPI;
 import com.ur.urcap.api.domain.data.DataModel;
 
 public class TweezerProgramNodeService
