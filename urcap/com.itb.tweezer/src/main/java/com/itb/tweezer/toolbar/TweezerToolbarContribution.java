@@ -29,6 +29,7 @@ public class TweezerToolbarContribution implements SwingToolbarContribution {
 
 	// Communication
 	private Communicator comm;
+	private static String ip = "172.30.3.149";
 	
 	// URCap
 	private final ToolbarContext context;
@@ -36,15 +37,14 @@ public class TweezerToolbarContribution implements SwingToolbarContribution {
 	// GUI
     private JLabel displayLabel; // Label to display input
 	
-	TweezerToolbarContribution(ToolbarContext context) {
+	TweezerToolbarContribution(ToolbarContext context) {	
 		this.context = context;
-		this.comm = new Communicator("192.168.1.172", 12345);
+		this.comm = new Communicator(this.ip, 12345);
 	}
 	
 	@Override
 	public void buildUI(JPanel jPanel) {
-		// Open socket
-		comm.start();
+		
 		
 		// Create UI
 		jPanel.setLayout(new BoxLayout(jPanel, BoxLayout.Y_AXIS));
@@ -131,14 +131,15 @@ public class TweezerToolbarContribution implements SwingToolbarContribution {
 	
 	@Override
 	public void openView() {
-		
+		// Open socket
+		comm.start();
 
 	}
 
 	@Override
 	public void closeView() {
-		// TODO create a function to close the socket
-
+		comm.setIsConnected(false);
 	}
 	
 }
+
