@@ -1,9 +1,10 @@
 import socket
 import time
 
-HOST = "0.0.0.0" # The remote host
+HOST = "0.0.0.0"
 PORT = 12345 # The same port as used by the server
 print ("Starting Program")
+count = 0
 
 keepGoing = True
 
@@ -28,30 +29,32 @@ try:
 
      while keepGoing:
          # Ensure we have at least two elements before modifying
-         if len(actual_state) > 31:
-            if(actual_state[0] == 0):
-                print("STOP!")
-            elif(actual_state[0] == 1):
-                actual_state[1] += 1  # Increment the width of the graph
-                print("Incremented the width of the graph:", actual_state[1])
-            elif(actual_state[0] == 2):
-                actual_state[1] -= 1  # Decrement the width of the graph
-                print("Decremented the width of the graph:", actual_state[1])
-            else:
-                print("para")
-                keepGoing = False
+         if len(actual_state) > 1:
+             match actual_state[0]:  # Switch on first byte
+                 case 0:
+                     print("STOP!")
+                 case 1:
+                     actual_state[1] += 1  # Increment the width of the graph
+                     print("Incremented the width of the graph:", actual_state[1])
+                 case 2:
+                     actual_state[1] -= 1  # Decrement the width of the graph
+                     print("Decremented the width of the graph:", actual_state[1])
+                 case _:
+                     print("para")
+                     keepGoing = False
+
         # Convert decimal array back to bytes
          output = bytes(actual_state)
          c.send(output)  # Send modified data back
          print("Sent Updated =", list(output))
-
+         time.sleep(0.2)
          # Receive
          actual_state = list(c.recv(32))
          print("Received Raw =", actual_state)
          time.sleep(0.2)
 except socket.error as socketerror:
-    print("S'ha trobat un error:")
-    print(socketerror)
+    print("Algun error hi ha")
+    print(count)
     c.close()
     s.close()
 c.close()
