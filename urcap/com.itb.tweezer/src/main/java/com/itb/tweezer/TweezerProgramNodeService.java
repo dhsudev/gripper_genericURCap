@@ -11,7 +11,7 @@ import com.ur.urcap.api.domain.data.DataModel;
 public class TweezerProgramNodeService
 		implements SwingProgramNodeService<TweezerProgramNodeContribution, TweezerProgramNodeView> {
 
-	public TweezerInstalationNodeService() {
+	public TweezerProgramNodeService() {
 	
 	}
 
@@ -27,8 +27,7 @@ public class TweezerProgramNodeService
 
 	@Override
 	public String getTitle() {
-		String title = "Tweezer Manager";
-		return title;
+		return "Tweezer Manager";
 	}
 
 	@Override
