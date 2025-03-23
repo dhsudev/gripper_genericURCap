@@ -15,13 +15,6 @@ class View {
     
     public View(String host, int port) {
         this.comm = new Communicator(host, port);
-        // Register a listener for "width" property changes
-        comm.addPropertyChangeListener("width", new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                SwingUtilities.invokeLater(() -> updateLabel());
-            }
-        });
     }
 
     // Updates the label text with the current width value
@@ -36,7 +29,6 @@ class View {
         } else {
             comm.setMode((byte) 2);
         }
-        updateLabel();
     }
 
     // Creates a styled button with common settings
@@ -94,18 +86,9 @@ class View {
             frame.getContentPane().setBackground(BACKGROUND_COLOR);
             frame.setVisible(true);
     
-            // Background thread to update the label every 200ms
-            new Thread(() -> {
-                while (true) {
-                    SwingUtilities.invokeLater(() -> updateLabel());
-                    try {
-                        Thread.sleep(200);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                        break;
-                    }
-                }
-            }).start();
+            // Start timer for the label
+            Timer timer = new Timer(500, e -> updateLabel());
+            timer.start();
         });
     }
 }
