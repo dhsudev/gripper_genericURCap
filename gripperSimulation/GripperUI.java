@@ -21,12 +21,12 @@ public class GripperUI {
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
         statusLabel = new JLabel("Status: Waiting for connection");
-        widthLabel = new JLabel("Graph Width: 42");
+        widthLabel = new JLabel("Graph Width: -");
         topPanel.add(statusLabel);
         topPanel.add(widthLabel);
         frame.add(topPanel, BorderLayout.NORTH);
 
-        gripperPanel = new GripperPanel(new int[]{0, 42});
+        gripperPanel = new GripperPanel(new int[]{0, 0});
         gripperPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         frame.add(gripperPanel, BorderLayout.CENTER);
 

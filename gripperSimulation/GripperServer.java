@@ -6,7 +6,7 @@ public class GripperServer implements Runnable {
 
     private GripperUI ui;
     private boolean keepGoing = true;
-    private int[] actualState = {0, 42};
+    private int[] actualState = {0, 0};
 
     public GripperServer(GripperUI ui) {
         this.ui = ui;
