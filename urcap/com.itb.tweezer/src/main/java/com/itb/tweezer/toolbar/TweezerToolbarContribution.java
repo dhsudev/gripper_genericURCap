@@ -20,6 +20,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.Timer;
 
 import com.itb.tweezer.utils.Communicator;
 import com.ur.urcap.api.contribution.toolbar.ToolbarContext;
@@ -40,6 +41,7 @@ public class TweezerToolbarContribution implements SwingToolbarContribution {
 	TweezerToolbarContribution(ToolbarContext context) {	
 		this.context = context;
 		this.comm = new Communicator(this.ip, 12345);
+		
 	}
 	
 	@Override
@@ -66,18 +68,15 @@ public class TweezerToolbarContribution implements SwingToolbarContribution {
 		// Get the with and display
         displayLabel = new JLabel(comm.getWidth() + " mm");
         displayLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        // timer 
+        Timer timer = new Timer(500, e -> displayLabel.setText(comm.getWidth() + " mm"));
+        timer.start();
 		return displayLabel;
 	}
-	
-	// Function that send data
-	private void onClickButton(Boolean isOpen) {
-		if (isOpen) {
-			comm.setMode((byte) 1);
-		} else {
-			comm.setMode((byte) 2); 
-		}
-		displayLabel.setText(comm.getWidth() + " mm");
-	}
+
+
+
 
 	private Component createHeader(String title) {
 		Box box = Box.createHorizontalBox();
@@ -102,13 +101,34 @@ public class TweezerToolbarContribution implements SwingToolbarContribution {
 	private Component createButton(String label, Boolean open) {
         JButton button = new JButton(label);
 
-        // On click the button change mode
-        button.addActionListener(new ActionListener() {
+        // Timer to check if a button is still pressed
+        Timer buttonPressTimer = new Timer(100, new ActionListener() {
+            private boolean isButtonPressed = false;
             @Override
             public void actionPerformed(ActionEvent e) {
-            	onClickButton(open);
+                // Check if any button is pressed
+                if (button.getModel().isPressed()) {
+                    if (!isButtonPressed) {
+                        isButtonPressed = true;
+                        System.out.println("A button is pressed.");
+                        if(open){
+                            comm.setMode((byte) 1);
+                            
+                        } else {
+                        	comm.setMode((byte) 2);
+                        }
+                    }
+                } else {
+                    if (isButtonPressed) {
+                        isButtonPressed = false;
+                        System.out.println("No button is pressed.");
+                        comm.setMode((byte) 0);
+                    }
+                }
             }
         });
+        buttonPressTimer.start();
+
 
         return button;
     }
@@ -132,6 +152,7 @@ public class TweezerToolbarContribution implements SwingToolbarContribution {
 	@Override
 	public void openView() {
 		// Open socket
+		this.comm = new Communicator(this.ip, 12345);
 		comm.start();
 
 	}
