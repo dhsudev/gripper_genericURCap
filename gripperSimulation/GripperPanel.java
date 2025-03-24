@@ -35,7 +35,7 @@ public class GripperPanel extends JPanel {
         super.paintComponent(g);
         // Enable anti-aliasing for smooth rendering.
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setRenderingHint(Graphics2D.KEY_ANTIALIASING, Graphics2D.VALUE_ANTIALIAS_ON);
+        //g2d.setRenderingHint(Graphics2D.KEY_ANTIALIASING, Graphics2D.VALUE_ANTIALIAS_ON);
         
         // Calculate panel dimensions and central body.
         int panelWidth = getWidth();
