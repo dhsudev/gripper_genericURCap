@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.beans.*;
+import java.awt.event.*;
 
 class View {
     // Instance fields for UI components and communicator
@@ -59,6 +59,32 @@ class View {
         panel.add(openButton);
         panel.add(closeButton);
         panel.add(connectButton);
+
+        // Timer to check if a button is still pressed
+        Timer buttonPressTimer = new Timer(100, new ActionListener() {
+            private boolean isButtonPressed = false;
+            public void actionPerformed(ActionEvent e) {
+                // Check if any button is pressed
+                if (openButton.getModel().isPressed() || closeButton.getModel().isPressed()) {
+                    if (!isButtonPressed) {
+                        isButtonPressed = true;
+                        System.out.println("A button is pressed.");
+                        if(openButton.getModel().isPressed()){
+                            handleButtons(true);
+                        } else {
+                            handleButtons(false);
+                        }
+                    }
+                } else {
+                    if (isButtonPressed) {
+                        isButtonPressed = false;
+                        System.out.println("No button is pressed.");
+                        comm.setMode((byte) 0);
+                    }
+                }
+            }
+        });
+        buttonPressTimer.start();
         return panel;
     }
 
@@ -89,6 +115,7 @@ class View {
             // Start timer for the label
             Timer timer = new Timer(500, e -> updateLabel());
             timer.start();
+            
         });
     }
 }
