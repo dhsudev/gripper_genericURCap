@@ -1,25 +1,20 @@
-# Compiler
 JAVAC = javac
-
-# Source files
+BIN_DIR = bin
 SRCS = Main.java Communicator.java
+CLASSES = $(SRCS:%.java=$(BIN_DIR)/%.class)
 
-# Class files
-CLASSES = $(SRCS:.java=.class)
+all: $(BIN_DIR) $(CLASSES)
 
-# Default target
-all: $(CLASSES)
+$(BIN_DIR):
+	mkdir -p $(BIN_DIR)
 
-# Compile source files to class files
-%.class: %.java
-	$(JAVAC) $<
+$(BIN_DIR)/%.class: %.java
+	$(JAVAC) -d $(BIN_DIR) $<
 
-# Clean up build files
 clean:
-	rm -f $(CLASSES)
+	rm -rf $(BIN_DIR)
 
-# Run the executable
-run: Main.class
-	java Main
+run: all
+	java -cp $(BIN_DIR) Main
 
 .PHONY: all clean run

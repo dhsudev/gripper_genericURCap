@@ -11,9 +11,11 @@ public class GripperUI {
     private JButton stopButton;
     private GripperServer server;
     private Thread serverThread;
-
+    // Persist the actual state even when the server stops.
+    private int[] actualState = new int[]{0, 0};
+    
     public GripperUI() {
-        frame = new JFrame("Gripper Socket Server GUI");
+        frame = new JFrame("Gripper Simulation");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(600, 400);
         frame.setLayout(new BorderLayout());
@@ -26,7 +28,7 @@ public class GripperUI {
         topPanel.add(widthLabel);
         frame.add(topPanel, BorderLayout.NORTH);
 
-        gripperPanel = new GripperPanel(new int[]{0, 0});
+        gripperPanel = new GripperPanel(actualState);
         gripperPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         frame.add(gripperPanel, BorderLayout.CENTER);
 
@@ -45,7 +47,8 @@ public class GripperUI {
     }
 
     private void startServer() {
-        server = new GripperServer(this);
+        // Pass the persisted actualState to the new server
+        server = new GripperServer(this, actualState);
         serverThread = new Thread(server);
         serverThread.setDaemon(true);
         serverThread.start();
@@ -60,7 +63,11 @@ public class GripperUI {
     }
 
     private void stopServer() {
-        server.stop();
+        if (server != null) {
+            // Update the persisted state from the server before stopping
+            actualState = server.getActualState();
+            server.stop();
+        }
     }
 
     public void setStatus(String status) {
@@ -69,6 +76,7 @@ public class GripperUI {
 
     public void setWidth(int width) {
         widthLabel.setText("Graph Width: " + width);
+        // Optionally update our persisted state if the width matters.
         gripperPanel.setActualState(server.getActualState());
         gripperPanel.repaint();
     }

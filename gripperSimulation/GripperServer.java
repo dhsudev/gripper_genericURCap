@@ -5,11 +5,24 @@ import java.net.Socket;
 public class GripperServer implements Runnable {
 
     private GripperUI ui;
-    private boolean keepGoing = true;
-    private int[] actualState = {0, 0};
+    // The gripper's actual state
+    private int[] actualState;
+    private boolean running = true;
 
-    public GripperServer(GripperUI ui) {
+    public GripperServer(GripperUI ui, int[] initialState) {
         this.ui = ui;
+        // Copy the state so that changes here do not affect the UI’s saved state immediately.
+        this.actualState = (initialState != null) ? initialState.clone() : new int[]{0, 0};
+    }
+
+    // Returns the current actual state
+    public int[] getActualState() {
+        return actualState.clone();
+    }
+    
+    // Setter for actualState[1] that ensures it is not negative
+    private void setGraphWidth(int width) {
+        actualState[1] = (width < 0) ? 0 : width;
     }
 
     @Override
@@ -22,7 +35,7 @@ public class GripperServer implements Runnable {
             clientSocket.getOutputStream().write(new byte[]{(byte) actualState[0], (byte) actualState[1]});
             Thread.sleep(200);
 
-            while (keepGoing) {
+            while (running) {
                 try {
                     byte[] buffer = new byte[32];
                     int bytesRead = clientSocket.getInputStream().read(buffer);
@@ -35,12 +48,14 @@ public class GripperServer implements Runnable {
                         if (receivedState[0] == 0) {
                             System.out.println("STOP!");
                         } else if (receivedState[0] == 1) {
-                            actualState[1]++;
+                            // Increase width using setter
+                            setGraphWidth(actualState[1] + 1);
                         } else if (receivedState[0] == 2) {
-                            actualState[1]--;
+                            // Decrease width using setter; setter will prevent negative values
+                            setGraphWidth(actualState[1] - 1);
                         } else {
                             System.out.println("Stopping server...");
-                            keepGoing = false;
+                            running = false;
                             break;
                         }
                     }
@@ -50,7 +65,7 @@ public class GripperServer implements Runnable {
                 } catch (IOException e) {
                     System.err.println("Connection reset by client: " + e.getMessage());
                     ui.setStatus("Connection reset");
-                    keepGoing = false;
+                    running = false;
                     break;
                 }
             }
@@ -65,10 +80,6 @@ public class GripperServer implements Runnable {
     }
 
     public void stop() {
-        keepGoing = false;
-    }
-
-    public int[] getActualState() {
-        return actualState;
+        running = false;
     }
 }
