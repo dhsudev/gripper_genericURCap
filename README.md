@@ -9,7 +9,7 @@ For the structure of the URCap we have implemented 3 separated parts that are re
 ![URCap structure](https://github.com/user-attachments/assets/e0d7b4c0-0b3f-4cb8-ac96-59a18475c5b4)
 Font 5: URCap structure.
 
-### Toolbar
+### Toolbar Functionality
 
 ![Griper simulator](https://github.com/user-attachments/assets/26e849fd-0c54-451a-be58-cbdda7dcbf45)
 Font 1: Griper simulator.
