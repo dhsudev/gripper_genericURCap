@@ -1,6 +1,6 @@
 # Griper (Tweezer) UPCap
 
-In this repo we have two main parts. The first one, the griper simulator, that acts as a server, and second, the griper URCap, with the name Tweezer, that acts as a client.
+In this repo we have two main parts. The first one, the griper simulator, that simulates a real griper that should be connected to a UR cobot, that acts as a server, and second, the griper URCap, with the name Tweezer, that acts as a client.
 
 ### Toolbar
 
