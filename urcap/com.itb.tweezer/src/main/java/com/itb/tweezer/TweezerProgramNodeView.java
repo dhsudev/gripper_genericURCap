@@ -82,3 +82,4 @@ public class TweezerProgramNodeView implements SwingProgramNodeView<TweezerProgr
         return Box.createRigidArea(new Dimension(10, 0));
     }
 }
+

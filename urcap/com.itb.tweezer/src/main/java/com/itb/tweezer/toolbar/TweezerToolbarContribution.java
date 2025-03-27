@@ -30,7 +30,7 @@ public class TweezerToolbarContribution implements SwingToolbarContribution {
 
 	// Communication
 	private Communicator comm;
-	private static String ip = "172.30.3.149";
+	private static String ip = "192.168.1.172";
 	
 	// URCap
 	private final ToolbarContext context;

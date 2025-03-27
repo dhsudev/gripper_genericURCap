@@ -1,5 +1,6 @@
 package com.itb.tweezer;
 
+
 import java.io.InputStream;
 import java.util.Locale;
 
@@ -12,6 +13,7 @@ import com.ur.urcap.api.contribution.ViewAPIProvider;
 import com.ur.urcap.api.domain.URCapAPI;
 import com.ur.urcap.api.domain.SystemAPI;
 import com.ur.urcap.api.domain.data.DataModel;
+
 
 public class TweezerProgramNodeService
 		implements SwingProgramNodeService<TweezerProgramNodeContribution, TweezerProgramNodeView> {
@@ -51,3 +53,4 @@ public class TweezerProgramNodeService
 		return new TweezerProgramNodeContribution(apiProvider, view, model);
 	}
 }
+

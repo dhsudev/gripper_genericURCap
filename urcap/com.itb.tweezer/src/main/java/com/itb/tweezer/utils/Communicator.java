@@ -28,6 +28,7 @@ public class Communicator implements Runnable {
     public int getWidth() { return this.width; }
     public byte getMode() { return this.mode; }
 
+  
     public void setWidth(int width) {
         this.width = width;
         updateData();
@@ -38,6 +39,7 @@ public class Communicator implements Runnable {
         updateData();
     }
 
+    // Output
     private void updateData() {
         byteLock.lock();
         try {
@@ -47,6 +49,7 @@ public class Communicator implements Runnable {
             byteLock.unlock();
         }
     }
+    // Input
     private void updateState() {
         byteLock.lock();
         try {
@@ -62,9 +65,9 @@ public class Communicator implements Runnable {
         open();
         while (isConnected) {
             read();
-            updateState();
+            updateState(); // Output
             sleep(200);
-            updateData();
+            updateData(); // Input
             send();
             sleep(200);
         }
@@ -101,7 +104,12 @@ public class Communicator implements Runnable {
                 int bytesRead = socket.getInputStream().read(buffer);
                 if (bytesRead > 0) {
                     System.out.println("Data received.");
-                    setWidth(buffer[1]);
+                    byteLock.lock();
+                    try {
+                        data = buffer;       
+                    } finally {
+                        byteLock.unlock();
+                    }
                 }
             }
         } catch (IOException e) {
@@ -112,9 +120,14 @@ public class Communicator implements Runnable {
     private void send() {
         try {
             if (socket != null) {
-                socket.getOutputStream().write(data);
-                socket.getOutputStream().flush();
-                System.out.println("Data sent: Mode=" + data[0] + ", Width=" + data[1]);
+            	byteLock.lock();
+                try {
+                	socket.getOutputStream().write(data);
+                    socket.getOutputStream().flush();
+                    System.out.println("Data sent: Mode=" + data[0] + ", Width=" + data[1]);       
+                } finally {
+                    byteLock.unlock();
+                }
             }
         } catch (IOException e) {
             System.err.println("Error sending data: " + e.getMessage());
@@ -132,6 +145,10 @@ public class Communicator implements Runnable {
     public void start() {
         new Thread(this).start();
     }
+    
+    public void setIsConnected(Boolean isConnected) {
+		this.isConnected = isConnected;
+	}
 /* //Exemple secuencial
     public static void main(String[] args) {
         Communicator comm = new Communicator("localhost", 12345);
@@ -169,3 +186,4 @@ public class Communicator implements Runnable {
         comm.isConnected = false; // Close the connection
     } */
 }
+
