@@ -8,76 +8,62 @@ public class Communicator implements Runnable {
     private String host;
     private int port;
     private boolean isConnected;
-    private byte[] data;
-    private int width;
-    private byte mode;
     private Socket socket;
-    private ReentrantLock byteLock = new ReentrantLock();
+    private byte[] outputBuffer = new byte[32];
+    private byte[] inputBuffer = new byte[32];
+    private ReentrantLock readBuffLock = new ReentrantLock();
+    private ReentrantLock writeBuffLock = new ReentrantLock();
+
+    private boolean debugMode = false;
+
+    public Communicator(String host, int port, boolean debugMode) {
+        this.host = host;
+        this.port = port;
+        this.debugMode = debugMode;
+    }
 
     public Communicator(String host, int port) {
         this.host = host;
         this.port = port;
-        this.isConnected = true;
-        this.width = 32;
-        this.mode = 0;
-        this.data = new byte[32];
-        updateData();
     }
 
     public boolean getIsConnected() { return this.isConnected; }
-    public int getWidth() { return this.width; }
-    public byte getMode() { return this.mode; }
 
-  
-    public void setWidth(int width) {
-        this.width = width;
-        updateData();
-    }
-
-    public void setMode(byte mode) {
-        this.mode = mode;
-        updateData();
-    }
-
-    // Output
-    private void updateData() {
-        byteLock.lock();
+    /* **********************************
+    * BUFFERS MANIPULATION              *
+    * Read/write using locks            *
+    *************************************/
+    public byte[] getInputBuffer() {
+        byte[] buffer = new byte[32];
+        readBuffLock.lock();
         try {
-            data[0] = mode;
-            data[1] = (byte) width;
+            buffer = inputBuffer;       
         } finally {
-            byteLock.unlock();
+            readBuffLock.unlock();
         }
+        return buffer;
     }
-    // Input
-    private void updateState() {
-        byteLock.lock();
+
+    public void setOutputBuffer(byte[] buffer) {
+        writeBuffLock.lock();
         try {
-            mode = data[0];       
-            width = data[1];       
+            outputBuffer = buffer;       
         } finally {
-            byteLock.unlock();
+            writeBuffLock.unlock();
         }
     }
 
-    @Override
-    public void run() {
-        open();
-        while (isConnected) {
-            read();
-            updateState(); // Output
-            sleep(200);
-            updateData(); // Input
-            send();
-            sleep(200);
-        }
-        close();
-    }
 
+    /* **********************************
+    * COMMUNICATION UTILS               *
+    * Utils to write/read with          *
+    * the sockets                       *
+    *************************************/
     private void open() {
         try {
             System.out.println("Opening socket...");
             socket = new Socket(host, port);
+            isConnected = true;
             System.out.println("Socket opened");
         } catch (IOException e) {
             System.err.println("Error opening socket: " + e.getMessage());
@@ -103,12 +89,12 @@ public class Communicator implements Runnable {
                 byte[] buffer = new byte[32];
                 int bytesRead = socket.getInputStream().read(buffer);
                 if (bytesRead > 0) {
-                    System.out.println("Data received.");
-                    byteLock.lock();
+                    debug("Data received: " + buffer);
+                    readBuffLock.lock();
                     try {
-                        data = buffer;       
+                        inputBuffer = buffer;       
                     } finally {
-                        byteLock.unlock();
+                        readBuffLock.unlock();
                     }
                 }
             }
@@ -120,18 +106,37 @@ public class Communicator implements Runnable {
     private void send() {
         try {
             if (socket != null) {
-            	byteLock.lock();
+            	writeBuffLock.lock();
                 try {
-                	socket.getOutputStream().write(data);
+                	socket.getOutputStream().write(outputBuffer);
                     socket.getOutputStream().flush();
-                    System.out.println("Data sent: Mode=" + data[0] + ", Width=" + data[1]);       
+                    debug("Sent outputBuff: " + outputBuffer);       
                 } finally {
-                    byteLock.unlock();
+                    writeBuffLock.unlock();
                 }
             }
         } catch (IOException e) {
             System.err.println("Error sending data: " + e.getMessage());
         }
+    }
+
+    /* **********************************
+    * COMMUNICATION LOOP                *
+    * Methods for init communication    *
+    * with a thread                     *
+    *************************************/
+
+    // Opens the socket, and while connected, reads and sends data each 200ms
+    @Override
+    public void run() {
+        open();
+        while (isConnected) {
+            read();
+            sleep(200);
+            send();
+            sleep(200);
+        }
+        close();
     }
 
     private void sleep(int ms) {
@@ -149,41 +154,12 @@ public class Communicator implements Runnable {
     public void setIsConnected(Boolean isConnected) {
 		this.isConnected = isConnected;
 	}
-/* //Exemple secuencial
-    public static void main(String[] args) {
-        Communicator comm = new Communicator("localhost", 12345);
-        comm.start();
 
-        try {
-            Thread.sleep(2000);  // Wait for the thread to start
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+    // Function to debug the communication
+    public void debug(String str) {
+        if (debugMode) {
+            System.out.println(str);
         }
-        comm.setWidth(30);
-        System.out.println("Changing mode to 1 (open)");
-        comm.setMode((byte) 1);
-        //comm.setWidth(100);
-
-        try {
-            Thread.sleep(200);  // Wait a few seconds to send data
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-
-        System.out.println("Changing mode to 2 (close)");
-        comm.setMode((byte) 2);
-
-        while(comm.getWidth() > 35){
-            comm.setMode((byte) 2);
-        }
-
-        try {
-            Thread.sleep(200);  // Allow the last packet to be sent before terminating
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        } 
-
-        comm.isConnected = false; // Close the connection
-    } */
+    }
 }
 

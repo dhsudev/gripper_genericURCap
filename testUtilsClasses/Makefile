@@ -1,6 +1,9 @@
 JAVAC = javac
 BIN_DIR = bin
-SRCS = Main.java Communicator.java
+UTILSPATH = ../urcap/com.itb.tweezer/src/main/java/com/itb/tweezer/utils
+SRCS = $(UTILSPATH)/Communicator.java $(UTILSPATH)/DataProcessor.java Test.java
+
+
 CLASSES = $(SRCS:%.java=$(BIN_DIR)/%.class)
 
 all: $(BIN_DIR) $(CLASSES)
@@ -10,6 +13,7 @@ $(BIN_DIR):
 
 $(BIN_DIR)/%.class: %.java
 	$(JAVAC) -d $(BIN_DIR) $<
+
 
 clean:
 	rm -rf $(BIN_DIR)
